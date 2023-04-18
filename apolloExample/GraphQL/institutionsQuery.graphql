@@ -1,0 +1,6 @@
+query getQuery {
+    getAllInstitutions {
+         id
+         name
+    }
+}

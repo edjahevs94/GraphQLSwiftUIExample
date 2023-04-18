@@ -1,0 +1,172 @@
+type Query {
+  getAllInstitutions: [Institution]
+  getPrograms(institutionId: Int): [Program]
+  getBadgesByInstructor(instructorId: Int!): [Badge]
+  getBadgesByActivity(activityId: Int!): [Badge]
+  getLeaderboard(activityId: Int!): [LeaderboardRowType]
+  getSessionsByActivity(activityId: Int!): [Session]
+  getStudents(programId: Int!): [Student]
+  loginStudent(username: String!, password: String!): LoginStudentResponse
+  getCoursesByStudent(studentId: Int!): [Course]
+  getStudentsByCourse(courseId: Int!): [Enrollment]
+  getStudentById(studentId: Int!): Student
+  login(username: String!, password: String!): LoginResponse
+  getInstructors(institutionId: Int): [Instructor]
+  getCoursesByInstructor(instructorId: Int!): [Course]
+  getActivitiesByCourse(courseId: Int!): [Activity]
+  getInstructorBadges(instructorId: Int!): [Badge]
+  getCommunityBadges: [Badge]
+  getBadgeCategories: [BadgeCategory]
+  getActivityById(activityId: Int!): Activity
+  getInstructorNotifications(instructorId: Int!): [Notification]
+  getStudentNotifications(studentId: Int!): [Notification]
+}
+
+type Mutation {
+  addProgram: Program
+  addBadgeToSession(badgeId: Int!, sessionId: Int!, studentId: Int!, activityId: Int!): StudentSession
+  removeBadgeInSession(badgeId: Int!, sessionId: Int!, studentId: Int!, activityId: Int!): StudentSession
+  signup(firstname: String!, lastname: String!, username: String!, password: String!, gender: Int!, institutionId: Int!): Student
+  enrollCourse(studentId: Int!, code: String!): Enrollment
+  changeStudentStatus(studentId: Int!, courseId: Int!, newStatus: Int!): Enrollment
+  createCourse(name: String!, color: String!, instructorId: Int!, institutionId: Int!, instructors: String): Course
+  createActivity(courseId: Int!, name: String!, badges: String, sessions: String): Activity
+  updateActivity(activityId: Int!, name: String!, badges: String, sessions: String): Activity
+  publishActivity(activityId: Int!): PublishResult
+  withdrawStudentFromCourse(studentId: Int!, courseId: Int!): Int
+  addInstructorNotification(instructorId: Int!, message: String!): Notification
+  addStudentNotification(studentIdId: Int!, message: String!): Notification
+}
+
+type Institution {
+  id: Int!
+  name: String!
+  status: String!
+}
+
+type Program {
+  id: Int!
+  name: String!
+  status: String!
+  institution: Institution!
+}
+
+type Badge {
+  id: Int!
+  name: String!
+  description: String!
+  url: String!
+  category: BadgeCategory
+  points: Int
+}
+
+type LeaderboardRowType {
+  id: Int!
+  pos: Int!
+  student: Student!
+  sessions: [SessionLeaderboardRow]
+  points: Float!
+}
+
+type BadgeShort {
+  id: Int!
+  points: Int
+}
+
+type Session {
+  id: Int!
+  tag: String!
+  badges: [Int]!
+}
+
+type SessionLeaderboardRow {
+  id: String!
+  tag: String!
+  badges: [BadgeShort]!
+  points: Float!
+}
+
+type StudentSession {
+  id: Int!
+  activityId: Int!
+}
+
+type LoginStudentResponse {
+  student: Student
+  token: String
+}
+
+type Student {
+  id: Int!
+  firstName: String!
+  lastName: String!
+  username: String!
+  nickname: String
+  avatarURL: String
+  institution: Institution!
+  gender: Int
+}
+
+type Enrollment {
+  id: Int!
+  courseId: Int!
+  student: Student
+  studentId: Int!
+  status: Int
+}
+
+type PublishResult {
+  num: Int
+}
+
+type Instructor {
+  id: Int!
+  firstName: String!
+  lastName: String!
+  username: String!
+  password: String
+  institution: Institution!
+}
+
+type LoginResponse {
+  instructor: Instructor
+  token: String
+}
+
+type Course {
+  id: Int!
+  name: String!
+  code: String
+  institution: Institution!
+  status: Int
+}
+
+type Activity {
+  id: Int!
+  name: String!
+  status: Int
+  badges: [Badge]
+  sessions: [SessionTag]
+}
+
+type SessionTag {
+  id: Int!
+  tag: String!
+}
+
+type BadgeCategory {
+  id: Int!
+  name: String!
+}
+
+type Notification {
+  id: String!
+  userId: Int!
+  message: String!
+  status: String!
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}
